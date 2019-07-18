@@ -1,0 +1,10 @@
+{# This file is included by citation_linker_2.html. #}
+
+
+{% ifequal field.name "genre" %}
+    <span id="genre">{{ field.label_tag }} {{ field }}</span>
+{% else %}
+<div class="form-row {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}" id="{{ field.name }}">
+    {{ field.label_tag }} {{ field }}
+</div>
+{% endifequal %}

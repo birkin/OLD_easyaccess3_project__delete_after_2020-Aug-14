@@ -1,0 +1,216 @@
+{% load staticfiles %}
+
+{# This is the base template that matches the look of search.library.brown.edu, and has been updated for accessibility. #}
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {% block page_title %}
+        easyAccess
+        {% endblock page_title %}
+    </title>
+    <link href="{% static 'css/all_search_css_pretty-print.css' %}" rel="stylesheet" type="text/css"/>
+    <script src="{% static 'js/jquery_3-3-1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap_3-3-7.min.js' %}"></script>
+
+    {% block extra_css %}
+    {% endblock %}
+
+    <style type="text/css">
+        div.container span#hide {
+            display: none; }
+        div#content_wrapper {
+            margin:0 auto;
+            width: 80%; }
+        div#footer {
+            padding-top: 1em; }
+        [is_index_page~="True"] {
+            text-decoration: underline; }
+        .right-click {
+            font-size: 80%;
+        }
+
+    </style>
+
+    {% block javascripts %}
+    {% endblock %}
+
+</head>
+
+<body class="blacklight-catalog blacklight-catalog-show">
+
+    <!-- BANNER start... -->
+
+    <div id="topmost-nav-links">
+        <ul>
+            <li><a href="https://library.brown.edu/borrowing/">Find &amp; Borrow</a></li>
+            <li><a href="https://library.brown.edu/info/ajdb">Articles, Journals, &amp; Databases</a></li>
+            <li><a href="https://library.brown.edu/about/specialists.php">Research Help</a></li>
+            <li><a href="https://library.brown.edu/libweb/hours.php">Hours, Locations, &amp; Events</a></li>
+            <li><a href="https://library.brown.edu/libweb/askalib.php">Ask a Question Now</a></li>
+            <li><a href="https://library.brown.edu/libweb/proxy.php">Off-Campus Access</a></li>
+            <li><a href="https://josiah.brown.edu/patroninfo">My Library Account</a></li>
+        </ul>
+    </div>
+
+    <div id="header-navbar" class="navbar navbar-inverse navbar-static-top" role="navigation">
+
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#user-util-collapse">
+                    <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="//library.brown.edu" title="link to library.brown.edu"><span id="hide">library.brown.edu</span></a>
+            </div>
+        </div>
+
+        <div id="search-navbar" class="navbar navbar-default navbar-static-top" role="navigation">
+            <div class="container">
+                <form accept-charset="UTF-8" action="{% url 'bul_search_url' %}" class="search-query-form form-inline clearfix navbar-form" method="get">
+                    <div style="display:none">
+                        <input name="utf8" type="hidden" value="&#x2713;" />
+                    </div>
+                    <div class="input-group col-md-9 col-md-offset-1">
+                        <label for="q" class="sr-only">Enter keywords to search library resources</label>
+                        <input class="search_q q form-control" id="q" name="q" placeholder="Enter keywords to search library resources" type="text" value="" />
+                        <span class="input-group-btn"> <button type="submit" class="btn btn-primary search-btn" id="search"> <span class="submit-search-text">Search</span> <span class="glyphicon glyphicon-search"></span> </button> </span>
+                    </div>
+                    <span class="start-over"><a href="/">Start over</a></span>
+                </form>
+            </div>
+        </div>
+
+        <div class="collapse navbar-collapse" id="user-util-collapse">
+            <div class="navbar-right">
+                <ul class="nav navbar-nav">
+                    {% block extra_tools %}
+                    {% endblock %}
+                    <li> <a href="{{ feedback_link }}" rel="tooltip" title="link to form for suggestions or reporting a problem">Feedback</a> </li>
+                    <li> <a href="http://library.brown.edu/libweb/askalib.php" rel="tooltip" title="link to contact-librarian information">Help</a> </li>
+                    <li> <a href="{% url 'findit:findit_base_resolver_url' %}" rel="tooltip" title="about easyBorrow and easyArticle"><span is_index_page="{{ is_index_page }}">About</span></a> </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>  <!-- end of: <div id="header-navbar"...  -->
+
+    <!-- ...BANNER end -->
+
+    <!-- CONTENT start... -->
+
+    <div id="main-container" class="container">
+        <div class="row">
+
+            {% if not is_index_page %}
+            <div id="content" class="col-md-9 show-document">
+            {% endif %}
+                {% block content %}
+                {% endblock content %}
+            {% if not is_index_page %}
+            </div>
+            {% endif %}
+
+
+            {% if not is_index_page %}
+            <!-- TOOLS start... -->
+            <div id="sidebar" class="col-md-3">
+                <div class="panel panel-default show-tools">
+                    <div class="panel-heading">
+                        Tools
+                    </div>
+                    <div class="panel-body">
+                        <ul class="nav">
+
+                            <!--
+                            <li class="endnote">
+                              <a id="endnoteLink" href="/catalog/b1635985.endnote">Shortlink <span class="right-click">(right-click to copy)</span></a>
+                            </li>
+                            -->
+                            <li>
+                                <a href="{{ permalink }}" rel="tooltip" title="right-click to copy shortlink">Shortlink <span class="right-click">(right-click to copy)</span></a>
+                            </li>
+
+                            <!--
+                            <li class="email">
+                              <a id="emailLink" data-ajax-modal="trigger" href="/catalog/email?id=b1635985">Export to Refworks</a>
+                            </li>
+                            -->
+                            <li>
+                                <a href="http://www.refworks.com/express/expressimport.asp?{{ querystring }}" rel="tooltip" title="export citation to Refworks">Export to Refworks</a>
+                            </li>
+
+                            <!--
+                            <li class="sms">
+                              <a id="smsLink" data-ajax-modal="trigger" href="/catalog/sms?id=b1635985">Export to EndNote</a>
+                            </li>
+                            -->
+                            <li>
+                                <a href="{{ ris_url }}" rel="tooltip" title="export citation to EndNote">Export to EndNote</a>
+                            </li>
+
+                            <!--
+                            <li class="citation">
+                              <a id="citationLink" data-ajax-modal="trigger" href="/catalog/citation?id=b1635985">Update this citation</a>
+                            </li>
+                            -->
+                            <li>
+                                <a href="{% url 'findit:citation_form_url' %}?{{ enhanced_querystring }}" rel="tooltip" title="link to citation-form">Update this citation</a>
+                            </li>
+
+                            <!--
+                            <li class="librarian_view">
+                              <a id="librarian_viewLink" data-ajax-modal="trigger" href="/catalog/b1635985/librarian_view">Ask a librarian</a>
+                            </li>
+                            -->
+                            <li>
+                                <a href="http://library.brown.edu/libweb/askalib.php" rel="tooltip" title="link to contact-librarian information">Ask a librarian</a>
+                            </li>
+
+                            <!--
+                            <li class="librarian_view">
+                              <a id="librarian_viewLink" data-ajax-modal="trigger" href="/catalog/b1635985/librarian_view">Report a problem</a>
+                            </li>
+                            -->
+                            <li>
+                                <a href="{{ feedback_link }}" rel="tooltip" title="link to problem-form">Report a problem</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>  <!-- end of: <div id="sidebar"... -->
+            <!-- ...TOOLS end -->
+            {% endif %}
+
+        </div> <!-- end of: <div class="row"> -->
+    </div> <!-- end of: <div id="main-container... -->
+
+    <!-- ...CONTENT end -->
+
+    <div id="footer">
+        <hr/>
+    </div>
+
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-3203647-3']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+{% block footer_javascripts %}
+{% endblock footer_javascripts %}
+
+</body>
+
+</html>

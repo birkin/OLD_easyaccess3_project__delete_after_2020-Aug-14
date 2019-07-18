@@ -1,0 +1,77 @@
+{# This file is included by resolve_josiah.html. It displays various kinds of availability. #}
+
+{% if print or online %}
+    <div class="holdings">
+
+        {# If we have a direct link - hyperlinked from title - and no other online holdings to display, pass.  Else, print each with the helper messages as necessary.#}
+        {% if online|length > 0 %}
+            <!-- <h3>Available online</h3> -->
+            <h2>Available online</h2>
+            <ul class="online-holdings">
+                {% for provider in online %}
+                    <li class="source"><a href="{{ provider.link }}" title="Full text from {{ provider.name }}">{{ provider.name }}</a>
+                        {# Put an asterik up as a warning about journal or issue level links #}
+                        {% if provider.type != "direct" %}
+                        <div class="notice" id="not-direct-link">
+                            <ul class="asterisk">
+                                <li>This is <b>not</b> a direct link to the article.</li>
+                                <li>You will need to search for the title or locate the date, volume, and issue on the publisher's website.</li>
+                                <!-- <li>If you don't find what you are looking for, please <a href="http://library.brown.edu/libweb/askalib.php">ask a Librarian</a>.</li> -->
+                                <li>If you don't find what you are looking for, please <a href="{{ feedback_link }}" rel="tooltip" title="problem-report url">let us know</a>.</li>
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {# Do print #}
+        {% if print %}
+            <h2>Available at the library</h2>
+            <ul class="print-holdings">
+
+                {% for held in print %}
+                    <li>
+                        {% comment %}
+                        Put the loc and callnum in a separate span that will be replaced
+                        by the book locator for Sci and Rock items.
+                        {% endcomment %}
+                        <span class="loc-callnum">
+                            {{ held.call_number }} -- {{ held.location | upper }}
+                            {% if held.location != 'Annex' %}
+                            <a class="book_locator_map iframe" href="https://apps.library.brown.edu/bibutils/map/?loc={{ held.location | lower }}&call={{ held.call_number }}&title={{ citation.source }} | {{ citation.title }}">
+                                (view map)
+                            </a>
+                            {% endif %}
+                        </span>
+                        {% comment %}
+                         Faculty can request any print item.
+                         Non-faculty can request annex items.
+                        {% endcomment %}
+                        {% ifequal held.location "Annex" %}
+                            <!-- &nbsp;-- <span class="request-link"><a href="http://josiah.brown.edu/search/c{{ held.call_number }}">request for delivery via Josiah</a></span> -->
+                            &nbsp;-- <span class="request-link"><a href="https://search.library.brown.edu/catalog?utf8=✓&search_field=call_number&q={{ held.call_number }}">request for delivery via Josiah</a></span>
+                        {% endifequal %}
+                   </li>
+                {% endfor %}
+
+            </ul>
+        {% endif %}
+
+
+    </div>  <!-- end of div class="holdings"-->
+{% endif %}  {# end of {% if print or online %} #}
+
+
+{% if not resolved %}
+    <div id="request-message" class="notice">
+        <h2>This article couldn&#8217;t be located in the library&#8217;s collections.</h2>
+        <ul>
+            {% url 'article_request:shib_login_url' as login_url %}
+            <li class="request-link"><a href="{{ login_url }}?{{ enhanced_querystring }}">Request from another library</a></li>
+            <li><a href="https://library.brown.edu/libweb/askalib.php">Ask a librarian</a></li>
+        </ul>
+    </div>
+{% endif %}
+
